@@ -4,6 +4,7 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { SessionProvider } from "next-auth/react";
 import { GnosisChiadoTestnet } from "@thirdweb-dev/chains";
 import { ThirdwebProvider, useContract } from "@thirdweb-dev/react";
+import Toolbar from "../components/Toolbar";
 
 const theme = extendTheme({
 	styles: {
