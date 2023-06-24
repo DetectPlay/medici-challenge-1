@@ -7,73 +7,59 @@ contract MedicalRecords {
 
     using ByteHasher for bytes;
 
-    ///////////////////////////////////////////////////////////////////////////////
-    ///                                  ERRORS                                ///
-    //////////////////////////////////////////////////////////////////////////////
-
-    /// @notice Thrown when attempting to reuse a nullifier
     error InvalidNullifier();
 
-    /// @dev The World ID instance that will be used for verifying proofs
     IWorldID internal immutable worldId;
 
-    /// @dev The contract's external nullifier hash
-    uint256 internal immutable externalNullifier;
+    uint256 internal immutable action;
 
-    /// @dev The World ID group ID (always 1)
     uint256 internal immutable groupId = 1;
 
-    /// @dev Whether a nullifier hash has been used already. Used to guarantee an action is only performed once by a single person
     mapping(uint256 => bool) internal nullifierHashes;
 
-    /// @param _worldId The WorldID instance that will verify the proofs
-    /// @param _appId The World ID app ID
-    /// @param _actionId The World ID action ID
+
     constructor(
         IWorldID _worldId,
-        string memory _appId,
-        string memory _actionId
+        string memory _appId
     ) {
         worldId = _worldId;
-        externalNullifier = abi
-            .encodePacked(abi.encodePacked(_appId).hashToField(), _actionId)
-            .hashToField();
+        action = abi.encodePacked(_appId).hashToField();
     }
 
-    struct Record {
-        string userHash;
+    struct record {
+        uint256 userHash;
         address ownerWallet;
         string gender;
         string birthday;
-        int heightCM;
-        int weightKG;
+        uint heightCM;
+        uint weightKG;
         address[] contributors;
         string note;
         string[] images;
     }
 
-    struct Note {
-        address author;
-        string datetime;
-        string content;
-    }
+    // struct Note {
+    //     address author;
+    //     string datetime;
+    //     string content;
+    // }
 
-    mapping(string => Record) private records; // World ID to record
+    mapping(uint256 => record) private records; // World ID to record
 
     // PREREQ CHECKS
 
-    modifier onlyContributor(string memory _userHash) {
+    modifier onlyContributor(uint256 _userHash) {
         require(isContributor(_userHash), "Caller is not a contributor of the record");
         _;
     }
 
-    modifier onlyOwner(string memory _userHash) {
+    modifier onlyOwner(uint256 _userHash) {
         require(records[_userHash].ownerWallet == msg.sender, "Caller is not the record owner");
         _;
     }
 
-    modifier recordExists(string memory _userHash) {
-        require(records[_userHash].ownerWallet != address(0), "Record does not exist for the wallet");
+    modifier recordExists(uint256 _userHash) {
+        require(records[_userHash].ownerWallet != address(0), "record does not exist for the wallet");
         _;
     }
 
@@ -81,38 +67,32 @@ contract MedicalRecords {
     
 
     function createRecord(
-        string memory _userHash,
+        uint256 _userHash,
         string memory _gender,
         string memory _birthday,
-        int _heightCM,
-        int _weightKG,
-        address signal,
-        uint256 root,
-        uint256 nullifierHash,
-        uint256[8] calldata proof
+        uint _heightCM,
+        uint _weightKG,
+        address _signal,
+        uint256 _root,
+        uint256[8] calldata _proof
     ) public {
-        require(records[_userHash].ownerWallet == address(0), "Record already exists for the caller");
+        address from = msg.sender;
 
-        // First, we make sure this person hasn't done this before
-        if (nullifierHashes[nullifierHash]) revert InvalidNullifier();
+        require(records[_userHash].ownerWallet == address(0), "record already exists for the caller");
 
-        // We now verify the provided proof is valid and the user is verified by World ID
-        worldId.verifyProof(
-            root,
-            groupId,
-            abi.encodePacked(signal).hashToField(),
-            nullifierHash,
-            externalNullifier,
-            proof
-        );
+        // worldId.verifyProof(
+        //     _root,
+        //     groupId,
+        //     abi.encodePacked(_signal).hashToField(),
+        //     _userHash,
+        //     action,
+        //     _proof
+        // );
 
-        // We now record the user has done this, so they can't do it again (proof of uniqueness)
-        nullifierHashes[nullifierHash] = true;
-
-        Record memory newRecord;
+        record memory newRecord;
 
         newRecord.userHash = _userHash;
-        newRecord.ownerWallet = msg.sender;
+        newRecord.ownerWallet = from;
         newRecord.gender = _gender;
         newRecord.birthday = _birthday;
         newRecord.heightCM = _heightCM;
@@ -122,7 +102,7 @@ contract MedicalRecords {
         records[_userHash] = newRecord;
     }
 
-    function modifyRecord(string memory _userHash, string memory _gender, int _heightCM, int _weightKG, string memory _note) public onlyContributor(_userHash) {
+    function modifyRecord(uint256 _userHash, string memory _gender, uint _heightCM, uint _weightKG, string memory _note) public onlyContributor(_userHash) {
         records[_userHash].gender = _gender;
         records[_userHash].heightCM = _heightCM;
         records[_userHash].weightKG = _weightKG;
@@ -130,32 +110,25 @@ contract MedicalRecords {
     }
 
     function changeWallet(
-        string memory _userHash, 
+        uint256 _userHash,
         address _newAddress, 
-        address signal,
-        uint256 root,
-        uint256 nullifierHash,
+        address _signal,
+        uint256 _root,
         uint256[8] calldata proof) public onlyOwner(_userHash) {
 
-        // First, we make sure this person hasn't done this before
-        if (nullifierHashes[nullifierHash]) revert InvalidNullifier();
+        // worldId.verifyProof(
+        //     _root,
+        //     groupId,
+        //     abi.encodePacked(_signal).hashToField(),
+        //     _userHash,
+        //     action,
+        //     proof
+        // );
 
-        // We now verify the provided proof is valid and the user is verified by World ID
-        worldId.verifyProof(
-            root,
-            groupId,
-            abi.encodePacked(signal).hashToField(),
-            nullifierHash,
-            externalNullifier,
-            proof
-        );
-
-        // We now record the user has done this, so they can't do it again (proof of uniqueness)
-        nullifierHashes[nullifierHash] = true;
         records[_userHash].ownerWallet = _newAddress;
     }
 
-    // function addNote(string memory _userHash, address _author, string memory _datetime, string memory _content) public onlyContributor(_userHash) {
+    // function addNote(uint256 _userHash, address _author, string memory _datetime, string memory _content) public onlyContributor(_userHash) {
 
     //     Note memory newNote;
     //     newNote.author = _author;
@@ -165,28 +138,28 @@ contract MedicalRecords {
     //     records[_userHash].notes.push(newNote);
     // }
 
-    function setContributors(string memory _userHash, address[] memory _contributors) public onlyOwner(_userHash) {
+    function setContributors(uint256 _userHash, address[] memory _contributors) public onlyOwner(_userHash) {
         records[_userHash].contributors = _contributors;
     }
 
-    function addImage(string memory _userHash, string memory _image) public onlyContributor(_userHash) {
+    function addImage(uint256 _userHash, string memory _image) public onlyContributor(_userHash) {
         records[_userHash].images.push(_image);
     }
 
     // READ
 
-    function hasRecord(string memory _userHash) public view returns (bool) {
+    function hasRecord(uint256 _userHash) public view returns (bool) {
         return records[_userHash].ownerWallet != address(0);
     }
 
-    function isOwner(string memory _userHash) public view recordExists(_userHash) returns (bool) {
+    function isOwner(uint256 _userHash) public view recordExists(_userHash) returns (bool) {
         if(records[_userHash].ownerWallet == msg.sender) {
             return true;
         }
         return false;
     }
 
-    function isContributor(string memory _userHash) public view recordExists(_userHash) returns (bool) {
+    function isContributor(uint256 _userHash) public view recordExists(_userHash) returns (bool) {
         if (isOwner(_userHash)) {
             return true;
         }
@@ -199,7 +172,7 @@ contract MedicalRecords {
         return false;
     }
 
-    function getRecord(string memory _userHash) public view onlyContributor(_userHash) returns (Record memory) {
+    function getRecord(uint256 _userHash) public view onlyContributor(_userHash) returns (record memory) {
         return records[_userHash];
     }
 
