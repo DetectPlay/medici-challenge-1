@@ -7,7 +7,7 @@ import {
 } from "@worldcoin/idkit";
 import { useCallback, useEffect } from "react";
 
-const proofKey = "worldCoinProof";
+const proofKey = "worldCoin";
 
 export default function IDKitLoginButton() {
 	const { open, setOpen } = useIDKit();
@@ -23,7 +23,7 @@ export default function IDKitLoginButton() {
 	const onSuccess = (result: ISuccessResult) => {
 		console.log(result);
 		localStorage.setItem(proofKey, JSON.stringify(result));
-		localStorage.setItem("userID", result.merkle_root);
+		localStorage.setItem("userID", result.nullifier_hash);
 		localStorage.setItem("proof", result.proof);
 	};
 

@@ -8,6 +8,7 @@ import dynamic from "next/dynamic";
 import { ISuccessResult, SignInButton, SignInWithWorldID } from "@worldcoin/idkit";
 import { useCallback } from "react";
 import IDKitLoginButton from "./IDKitLoginButton";
+import FormView from "../components/FormView";
 
 const IDKitWidget = dynamic(
 	() => import("@worldcoin/idkit").then(mod => mod.IDKitWidget),
@@ -27,8 +28,9 @@ const Home: NextPage = () => {
 	};
 
 	return (
-		<Container bg="yellow">
+		<Container>
 			<IDKitLoginButton />
+			<FormView />
 		</Container>
 	);
 };
