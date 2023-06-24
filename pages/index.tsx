@@ -5,7 +5,7 @@ import styles from "../styles/Home.module.css";
 import { Button, Container } from "@chakra-ui/react";
 import LoginButton from "../components/LoginButton";
 import dynamic from "next/dynamic";
-import { ISuccessResult } from "@worldcoin/idkit";
+import { ISuccessResult, SignInButton, SignInWithWorldID } from "@worldcoin/idkit";
 import { useCallback } from "react";
 import IDKitLoginButton from "./IDKitLoginButton";
 
