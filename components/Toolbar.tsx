@@ -71,6 +71,16 @@ export default function Toolbar() {
 							>
 								Files
 							</Button>
+							<Button
+								onClick={() =>
+									router.push({
+										pathname: "/data",
+										query: { userId: userId },
+									})
+								}
+							>
+								Data
+							</Button>
 						</>
 					)}
 				</ButtonGroup>
