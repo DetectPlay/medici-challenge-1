@@ -19,7 +19,16 @@ const theme = extendTheme({
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 	return (
-		<ThirdwebProvider activeChain={Mumbai}>
+		<ThirdwebProvider
+			sdkOptions={{
+				gasless: {
+					openzeppelin: {
+						relayerUrl: process.env.NEXT_PUBLIC_OPENZEPPELIN_URL!,
+					},
+				},
+			}}
+			activeChain={Mumbai}
+		>
 			<ChakraProvider theme={theme}>
 				<SessionProvider session={session}>
 					<Component {...pageProps} />
