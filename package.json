@@ -27,6 +27,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-parallax-tilt": "^1.7.149",
+    "web3.storage": "^4.5.4",
     "zksync-web3": "^0.14.3"
   },
   "devDependencies": {
