@@ -12,8 +12,8 @@ import {
 
 export default function FilesView({ files }: { files: string[] }) {
 	function isImage(file: string) {
-		const ending = file.substring(file.length - 3);
-		return ending == "jpg" || ending == "png";
+		const ending = file.substring(file.length - 4);
+		return ending == ".jpg" || ending == ".png" || ending == "jpeg";
 	}
 
 	const title = (f: string) => {
