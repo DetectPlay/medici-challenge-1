@@ -12,7 +12,6 @@ import {
 } from "@chakra-ui/react";
 import { useContract, useContractRead, useContractWrite } from "@thirdweb-dev/react";
 import { useEffect, useState, useCallback } from "react";
-import { IDKitWidget, ISuccessResult, useIDKit } from "@worldcoin/idkit";
 import { useAddress } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
 import { CONTRACT_ADDRESS } from "./consts";
@@ -29,8 +28,6 @@ export default function UpdateRecordForm({ userId }: { userId: string }) {
 	const updateRecordObject = useContractWrite(contract, "modifyRecord");
 
 	const address = useAddress();
-
-	console.log(userId);
 
 	const { data, isLoading } = useContractRead(contract, "getRecord", [userId]);
 

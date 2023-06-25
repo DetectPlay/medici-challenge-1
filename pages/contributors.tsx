@@ -1,18 +1,17 @@
 import React from "react";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
-import { useContract, useContractRead } from "@thirdweb-dev/react";
 import { Container, Spinner, Text } from "@chakra-ui/react";
-import UpdateRecordForm from "../components/UpdateRecordForm";
 import Toolbar from "../components/Toolbar";
 import { useRouter } from "next/router";
+import ContributorsForm from "../components/ContributorsForm";
 
-const Update: NextPage = () => {
+const Contributors: NextPage = () => {
 	const router = useRouter();
 
 	const NoRecordHeading = () => (
 		<Text fontSize="4xl" fontWeight="bold" textAlign="center" color="white">
-			Update Patient Record
+			Manage Admins
 		</Text>
 	);
 
@@ -26,10 +25,10 @@ const Update: NextPage = () => {
 			<br />
 			<Container>
 				<NoRecordHeading />
-				<UpdateRecordForm userId={router.query["userId"] as string} />
+				<ContributorsForm userId={router.query["userId"] as string} />
 			</Container>
 		</>
 	);
 };
 
-export default Update;
+export default Contributors;

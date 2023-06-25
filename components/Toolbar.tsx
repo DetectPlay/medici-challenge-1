@@ -36,7 +36,16 @@ export default function Toolbar() {
 					Update
 				</Button>
 
-				<Button onClick={() => router.push("/contributors")}>Contributors</Button>
+				<Button
+					onClick={() =>
+						router.push({
+							pathname: "/contributors",
+							query: { userId: userId },
+						})
+					}
+				>
+					Contributors
+				</Button>
 				<Button onClick={() => router.push("/scans")}>Scans</Button>
 			</ButtonGroup>
 			<Spacer />
