@@ -20,10 +20,11 @@ contract MedicalRecords {
 
     constructor(
         IWorldID _worldId,
-        string memory _appId
+        string memory _appId,
+        string memory _actionId
     ) {
         worldId = _worldId;
-        action = abi.encodePacked(_appId).hashToField();
+        action = abi.encodePacked(abi.encodePacked(_appId).hashToField(), _actionId).hashToField();
     }
 
     struct record {
@@ -64,6 +65,21 @@ contract MedicalRecords {
     }
 
     // WRITE
+
+    function worldCoinAuth(
+        uint256 _userHash,
+        address _signal,
+        uint256 _root,
+        uint256[8] calldata _proof) public view {
+        worldId.verifyProof(
+            _root,
+            groupId,
+            abi.encodePacked(_signal).hashToField(),
+            _userHash,
+            action,
+            _proof
+        );
+    }
     
 
     function createRecord(
@@ -172,7 +188,7 @@ contract MedicalRecords {
         return false;
     }
 
-    function getRecord(uint256 _userHash) public view onlyContributor(_userHash) returns (record memory) {
+    function getRecord(uint256 _userHash) public view returns (record memory) {
         return records[_userHash];
     }
 

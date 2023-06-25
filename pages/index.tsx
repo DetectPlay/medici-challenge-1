@@ -74,7 +74,7 @@ const Home: NextPage = () => {
 					mt={75}
 					colorScheme="teal"
 					size={"lg"}
-					onClick={() => router.push("/app")}
+					onClick={() => router.push("/create")}
 				>
 					Get Started
 				</Button>

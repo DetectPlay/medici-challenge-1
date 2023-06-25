@@ -26,16 +26,16 @@ export default function IDKitLoginButton() {
 	const onSuccess = (result: ISuccessResult) => {
 		console.log(result);
 		localStorage.setItem(proofKey, JSON.stringify(result));
-		localStorage.setItem("userID", result.nullifier_hash);
+		localStorage.setItem("userId", result.nullifier_hash);
 		localStorage.setItem("proof", result.proof);
 	};
 
-	const handleClick = (open: () => void) => {
-		const proof = localStorage.getItem(proofKey);
-		if (!proof) {
-			open();
+	useEffect(() => {
+		const userId = localStorage.getItem("userId");
+		if (!userId) {
+			setOpen(true);
 		}
-	};
+	}, []);
 
 	return (
 		<IDKitWidget
@@ -48,11 +48,12 @@ export default function IDKitLoginButton() {
 			// walletConnectProjectId="get_this_from_walletconnect_portal"
 		>
 			{({ open }) => (
-				<SignInButton
-					onClick={() => handleClick(open)}
-					theme="dark"
-					style={{ color: "white" }}
-				/>
+				<></>
+				// <SignInButton
+				// 	onClick={() => handleClick(open)}
+				// 	theme="dark"
+				// 	style={{ color: "white" }}
+				// />
 			)}
 		</IDKitWidget>
 	);

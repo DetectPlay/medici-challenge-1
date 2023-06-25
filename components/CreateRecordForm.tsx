@@ -12,9 +12,10 @@ import { useEffect, useState, useCallback } from "react";
 import { IDKitWidget, ISuccessResult, useIDKit } from "@worldcoin/idkit";
 import { useAddress } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
+import { CONTRACT_ADDRESS } from "./consts";
 
 export default function CreateRecordForm() {
-	const { contract } = useContract("0x7F8AcC7dB0351b95437dB1CdA44d0Dc47D0Ae23a");
+	const { contract } = useContract(CONTRACT_ADDRESS);
 	const [gender, setGender] = useState("");
 	const [birthday, setBirthday] = useState("");
 	const [height, setHeight] = useState("");
