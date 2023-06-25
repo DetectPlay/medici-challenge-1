@@ -25,10 +25,8 @@ const Data: NextPage = () => {
 		<>
 			<Toolbar />
 			<br />
-			<Container>
-				<Heading />
-				<DataPage userId={router.query["userId"] as string} />
-			</Container>
+			<Heading />
+			<DataPage userId={router.query["userId"] as string} />
 		</>
 	);
 };

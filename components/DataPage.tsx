@@ -115,7 +115,8 @@ export default function DataPage({ userId }: { userId: string }) {
 		);
 	} else {
 		return (
-			<HStack mt={5} align="stretch" justify={"center"}>
+			<HStack mt={7} justify={"center"}>
+				<Spacer />
 				<VStack>
 					<Stack spacing={4}>
 						<Select placeholder="Gender" bg="white" value={gender} disabled>
@@ -168,14 +169,14 @@ export default function DataPage({ userId }: { userId: string }) {
 					</Stack>
 				</VStack>
 				<Spacer />
-				<VStack>
+				<VStack width={500}>
 					<Textarea
 						placeholder="Enter a prompt ..."
 						onChange={e => setPrompt(e.target.value)}
 						resize="vertical"
 						value={prompt}
 						size="md"
-						width="200"
+						width="100%"
 						color="white"
 						bg="#1f1f1f"
 					/>
@@ -186,10 +187,11 @@ export default function DataPage({ userId }: { userId: string }) {
 					>
 						<ArrowRightIcon />
 					</Button>
-					<Card width="100%" minHeight={200} bg="black" color={"white"}>
+					<Card width="100%" minHeight={300} bg="black" color={"white"}>
 						<CardBody>{answer}</CardBody>
 					</Card>
 				</VStack>
+				<Spacer />
 			</HStack>
 		);
 	}
